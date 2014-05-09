@@ -1,0 +1,32 @@
+{
+  "name": "gitpgdump",
+  "version": "0.1.0",
+  "description": "Helper tool for pg_dumping into git and New Relic",
+  "main": "gitpgdump.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sendanor/gitpgdump.git"
+  },
+  "keywords": [
+    "newrelic",
+    "git",
+    "pg",
+    "dump",
+    "postgresql",
+    "sql"
+  ],
+  "author": "Jaakko-Heikki Heusala <jheusala@iki.fi>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sendanor/gitpgdump/issues"
+  },
+  "homepage": "https://github.com/sendanor/gitpgdump",
+  "dependencies": {
+    "minimist":  ">= 0.0.9  < 0.1.0",
+    "nor-debug": ">= 0.1.32 < 0.2.0",
+    "nor-exec":  ">= 0.1.1  < 0.2.0"
+  }
+}
