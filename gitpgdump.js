@@ -35,8 +35,21 @@ if(newrelic === true) {
 	args = [pgconfig, datafile];
 }
 
-exec(cmd, args).fail(function(err) {
+exec(cmd, args).then(function(results) {
+	if(process.env.GITPGDUMP_DEBUG !== undefined) {
+		console.log(results.stdout);
+		console.error(results.stderr);
+	}
+}).fail(function(err) {
 	console.error('gitpgdump: error: ' + (err.stderr || err));
+	if(process.env.GITPGDUMP_DEBUG !== undefined) {
+		if(err.stdout) {
+			debug.log('stdout = ', err.stdout);
+		}
+		if(err.stdout) {
+			debug.log('retval = ', err.retval);
+		}
+	}
 }).done();
 
 /* EOF */
