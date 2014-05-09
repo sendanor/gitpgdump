@@ -6,15 +6,23 @@ Git-based PostgreSQL database backup utility.
 gitpgdump
 ---------
 
-It's a simple bash script that saves the SQL dump in the git.
+It's a simple javascript/bash/PHP script that saves the SQL dump in the git.
 
-newrelic-gitpgdump
-------------------
+We're using PHP for New Relic because New Relic does not support custom metrics in Node.js yet.
 
-This is a simple PHP script that also records the backup process in your New 
-Relic.
+We're using `sh` since it's a lot easier to use to run shell scripts.
 
-You can then use New Relic to monitor your backups.
+We might port it as pure JS maybe in the future when New Relic has better support for Node.js.
 
-The New Relic command is actually written in PHP instead of Node.js because New 
-Relic does not support it at the moment.
+### Installation
+
+`npm install -g gitpgdump`
+
+### Usage
+
+```
+mkdir my-backup-dir
+cd my-backup-dir
+git init
+gitpgdump --newrelic-license='my-license-key' --newrelic-appname="gitpgdump-myapp" --pg="postgres://myuser:mypass@mypghost/mydbname"
+```

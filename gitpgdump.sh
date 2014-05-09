@@ -74,7 +74,16 @@ else
 		if test "xGITPGDUMP_DEBUG" != x; then
 			echo "gipgdump.sh: debug: Backup successfully done." >&2
 		fi
-		exit 0
+
+		if git gc --quiet; then
+			if test "xGITPGDUMP_DEBUG" != x; then
+				echo "gipgdump.sh: debug: Backup clean up / optimization successfully done." >&2
+			fi
+			exit 0
+		else
+			echo 'gitpgdump: Backup directory clean up failed.' >&2
+			exit 3
+		fi
 	else
 		echo 'gitpgdump: Backup commit failed.' >&2
 		exit 1
