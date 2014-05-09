@@ -1,6 +1,6 @@
 {
   "name": "gitpgdump",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Helper tool for pg_dumping into git and New Relic",
   "main": "gitpgdump.js",
   "bin": {

@@ -37,6 +37,12 @@ try {
 	$return_var = -1;
 	passthru( dirname(__FILE__) . "/gitpgdump.sh " . escapeshellarg($pgconfig) . " " . escapeshellarg($datafile), $return_var);
 
+	$file_size = filesize($datafile);
+	newrelic_custom_metric('Custom/Backup/file_size', $file_size );
+
+	$dir_size = system("du -bsx " . escapeshellarg(dirname($datafile)));
+	newrelic_custom_metric('Custom/Backup/dir_size', $dir_size );
+
 	if($return_var != 0) {
 		throw new Exception('Failed to execute backup!');
 	}
