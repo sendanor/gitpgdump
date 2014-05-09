@@ -19,6 +19,13 @@ else
 	exit 2
 fi
 
+if test -d "$basedir/.git"; then
+	:
+else
+	echo "No git directory at $basedir/.git" >&2
+	exit 2
+fi
+
 cd "$basedir"
 
 if test -f "$datafile".sql; then
