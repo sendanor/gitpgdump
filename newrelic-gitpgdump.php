@@ -40,7 +40,9 @@ try {
 	$file_size = filesize($datafile . ".sql");
 	newrelic_custom_metric('Custom/Backup/file_size', $file_size );
 
-	$dir_size = system("du -bsx " . escapeshellarg(dirname($datafile)));
+	$last_line = system("du -bsx " . escapeshellarg(dirname($datafile)) . "|tr '\n\t' '  '" );
+	$parts = explode(" ", $last_line);
+	$dir_size = intval($parts[0], 10);
 	newrelic_custom_metric('Custom/Backup/dir_size', $dir_size );
 
 	if($return_var != 0) {
