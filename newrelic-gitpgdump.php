@@ -37,7 +37,7 @@ try {
 	$return_var = -1;
 	passthru( dirname(__FILE__) . "/gitpgdump.sh " . escapeshellarg($pgconfig) . " " . escapeshellarg($datafile), $return_var);
 
-	$file_size = filesize($datafile);
+	$file_size = filesize($datafile . ".sql");
 	newrelic_custom_metric('Custom/Backup/file_size', $file_size );
 
 	$dir_size = system("du -bsx " . escapeshellarg(dirname($datafile)));
