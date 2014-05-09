@@ -31,7 +31,7 @@ try {
 	}
 
 	newrelic_background_job(true);
-	newrelic_name_transaction ("/gitpgdump");
+	newrelic_name_transaction ("/background/gitpgdump");
 	newrelic_custom_metric('Custom/Backup/time', $time );
 
 	$return_var = -1;
