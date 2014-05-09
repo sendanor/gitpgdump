@@ -5,9 +5,9 @@ var PATH = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 
 var pgconfig = argv.pg;
-var newrelic = !!(argv.newrelic);
+var newrelic = !!(argv.newrelic || argv['newrelic-appname'] || argv['newrelic-name'] || argv['newrelic-license']);
 var backup_name = argv.name || 'data';
-var newrelic_name = argv['newrelic-name'] || argv['newrelic'] || '';
+var newrelic_name = argv['newrelic-appname'] || argv['newrelic-name'] || argv['newrelic'] || '';
 var newrelic_license = argv['newrelic-license'] || '';
 
 var basedir = process.cwd();
@@ -25,7 +25,7 @@ if(newrelic) {
 }
 
 exec(cmd, args).fail(function(err) {
-	debug.error(err);
+	console.error('gitpgdump: error: ' + (err.stderr || err));
 }).done();
 
 /* EOF */

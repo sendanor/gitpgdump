@@ -42,7 +42,7 @@ try {
 	}
 
 } catch(Exception $e) {
-	echo 'Error: ', $e->getMessage(), "\n";
+	echo 'gitpgdump: error: ', $e->getMessage(), "\n";
 	if(extension_loaded('newrelic')) {
 		newrelic_notice_error($e->getMessage(), $e);
 	}

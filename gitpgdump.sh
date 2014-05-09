@@ -8,7 +8,7 @@ basedir="$(dirname "$datafile")"
 if echo "$pgconfig"|grep -qE '^(postgresql|postgres):'; then
 	:
 else
-	echo "Invalid pgconfig: $pgconfig" >&2
+	echo "Invalid --pg: $pgconfig" >&2
 	exit 2
 fi
 
@@ -30,6 +30,8 @@ cd "$basedir"
 
 if test -f "$datafile".sql; then
 	start="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+	touch "$datafile".sql.new
+	chmod 600 "$datafile".sql.new
 	pg_dump "$pgconfig" -Z 0 -x -O -f "$datafile".sql.new
 	end="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 	if cmp -s "$datafile".sql.new "$datafile".sql; then
@@ -41,19 +43,21 @@ if test -f "$datafile".sql; then
 	fi
 else
 	start="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+	touch "$datafile".sql
+	chmod 600 "$datafile".sql
 	pg_dump "$pgconfig" -Z 0 -x -O -f "$datafile".sql
 	end="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 	git add "$datafile".sql
 fi
 
 if git diff|wc -c|grep -q '^0$'; then
-	echo 'build-dump.sh: Nothing changed. Ignoring commit.' >&2
+	echo 'gitpgdump: Nothing changed. Ignoring commit.' >&2
 	exit 1
 else
 	if git commit -q -a -m "New backup from $start"; then
 		exit 0
 	else
-		echo 'build-dump.sh: Backup commit failed.' >&2
+		echo 'gitpgdump: Backup commit failed.' >&2
 		exit 1
 	fi
 fi
