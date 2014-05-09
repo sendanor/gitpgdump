@@ -22,8 +22,6 @@ try {
 		$license = $argv[4];
 	}
 
-	$time     = round(microtime(true) * 1000);
-
 	if(strlen($license) !== 0) {
 		newrelic_set_appname($name, $license);
 	} else {
@@ -32,19 +30,27 @@ try {
 
 	newrelic_background_job(true);
 	newrelic_name_transaction ("/background/gitpgdump");
-	newrelic_custom_metric('Custom/Backup/time', $time );
 
 	$return_var = -1;
+	$start_time = microtime(true);
 	passthru( dirname(__FILE__) . "/gitpgdump.sh " . escapeshellarg($pgconfig) . " " . escapeshellarg($datafile), $return_var);
+	$end_time = microtime(true);
+	$duration = round(($end_time-$start_time) * 1000);
 
+	// Custom/Backup/duration
+	newrelic_custom_metric('Custom/Backup/duration', $duration );
+
+	// Custom/Backup/file_size
 	$file_size = filesize($datafile . ".sql");
 	newrelic_custom_metric('Custom/Backup/file_size', $file_size );
 
+	// Custom/Backup/dir_size
 	$last_line = system("du -bsx " . escapeshellarg(dirname($datafile)) . "|tr '\n\t' '  '" );
 	$parts = explode(" ", $last_line);
 	$dir_size = intval($parts[0], 10);
 	newrelic_custom_metric('Custom/Backup/dir_size', $dir_size );
 
+	// Check if successful execute
 	if($return_var != 0) {
 		throw new Exception('Failed to execute backup!');
 	}
