@@ -35,7 +35,7 @@ try {
 	newrelic_custom_metric('Custom/Backup/time', $time );
 
 	$return_var = -1;
-	passthru( dirname(__FILE__) . "/gitpgdump.sh", $return_var);
+	passthru( dirname(__FILE__) . "/gitpgdump.sh " + escapeshellarg($pgconfig) + " " + escapeshellarg($datafile), $return_var);
 
 	if($return_var != 0) {
 		throw new Exception('Failed to execute backup!');
