@@ -35,13 +35,25 @@ if test -f "$datafile".sql; then
 	pg_dump "$pgconfig" -Z 0 -x -O -f "$datafile".sql.new
 	end="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 	if cmp -s "$datafile".sql.new "$datafile".sql; then
+		if test "xGITPGDUMP_DEBUG" != x; then
+			echo "gipgdump.sh: debug: No changes." >&2
+		fi
+
 		rm -f "$datafile".sql.new
 	else
+		if test "xGITPGDUMP_DEBUG" != x; then
+			echo "gipgdump.sh: debug: There was changes." >&2
+		fi
+
 		mv -f "$datafile".sql "$datafile".sql.old
 		mv -f "$datafile".sql.new "$datafile".sql
 		rm -f "$datafile".sql.old
 	fi
 else
+	if test "xGITPGDUMP_DEBUG" != x; then
+		echo "gipgdump.sh: debug: Backup was missing, creating initial backup." >&2
+	fi
+
 	start="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 	touch "$datafile".sql
 	chmod 600 "$datafile".sql
@@ -51,10 +63,17 @@ else
 fi
 
 if git diff|wc -c|grep -q '^0$'; then
-	echo 'gitpgdump: Nothing changed. Ignoring commit.' >&2
-	exit 1
+	echo 'gitpgdump: No real changed. Ignoring commit.' >&2
+	exit 0
 else
+	if test "xGITPGDUMP_DEBUG" != x; then
+		echo "gipgdump.sh: debug: Committing since there was changes: ""$(git diff)" >&2
+	fi
+
 	if git commit -q -a -m "New backup from $start"; then
+		if test "xGITPGDUMP_DEBUG" != x; then
+			echo "gipgdump.sh: debug: Backup successfully done." >&2
+		fi
 		exit 0
 	else
 		echo 'gitpgdump: Backup commit failed.' >&2
